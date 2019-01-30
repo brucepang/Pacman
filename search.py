@@ -82,22 +82,69 @@ def depthFirstSearch(problem):
     To get started, you might want to try some of these simple commands to
     understand the search problem that is being passed in:
 
-    print "Start:", problem.getStartState()
-    print "Is the start a goal?", problem.isGoalState(problem.getStartState())
-    print "Start's successors:", problem.getSuccessors(problem.getStartState())
+    print("Start:", problem.getStartState())
+    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
     """
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+
+    visited = set()
+    visited.add(problem.getStartState())
+    stack = util.Stack()
+    
+    # Tuple with coordinate and current path
+    stack.push((problem.getStartState(),[]))
+
+    while not stack.isEmpty():
+        current,prevPath = stack.pop()
+        # print(prevPath)
+        if problem.isGoalState(current):
+            return prevPath
+
+        for coordinate, direction, _ in problem.getSuccessors(current):
+            if coordinate not in visited:
+                visited.add(coordinate)
+                stack.push((coordinate,prevPath+[direction]))
+
+    return []
+
 
 def breadthFirstSearch(problem):
     """Search the shallowest nodes in the search tree first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    visited = set()
+    visited.add(problem.getStartState())
+    queue = util.Queue()
+
+    queue.push((problem.getStartState(),[]))
+
+    while not queue.isEmpty():
+        current,prevPath = queue.pop()
+        if problem.isGoalState(current):
+            return prevPath
+
+        for coordinate, direction, _ in problem.getSuccessors(current):
+            if coordinate not in visited:
+                visited.add(coordinate)
+                queue.push((coordinate,prevPath+[direction]))
+    return []
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    visited = set()
+    visited.add(problem.getStartState())
+    pq = util.PriorityQueue()
+    pq.push((problem.getStartState(),[]),0)
+    while not pq.isEmpty():
+        current, prevPath = pq.pop()
+        if problem.isGoalState(current):
+            return prevPath
+
+        for coordinate, direction, _ in problem.getSuccessors(current):
+            if coordinate not in visited:
+                visited.add(coordinate)
+                item = (coordinate,prevPath+[direction]) 
+                priority = problem.getCostOfActions(prevPath+[direction])
+                pq.push(item,priority)
+    return []
 
 def nullHeuristic(state, problem=None):
     """
@@ -108,8 +155,24 @@ def nullHeuristic(state, problem=None):
 
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    visited = set()
+    visited.add(problem.getStartState())
+    pq = util.PriorityQueue()
+    pq.push((problem.getStartState(),[]),0)
+    while not pq.isEmpty():
+        current, prevPath = pq.pop()
+        if problem.isGoalState(current):
+            return prevPath
+
+        for coordinate, direction, _ in problem.getSuccessors(current):
+            if coordinate not in visited:
+                visited.add(coordinate)
+                item = (coordinate,prevPath+[direction]) 
+                f = problem.getCostOfActions(prevPath+[direction])
+                f = f + heuristic(coordinate,problem)
+                pq.push(item,f)
+    return []
+
 
 
 # Abbreviations
