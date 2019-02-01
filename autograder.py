@@ -383,5 +383,5 @@ if __name__ == '__main__':
         q4 = a['q4']
         q5 = a['q5']
         q6 = a['q6']
-        grade = [q1, q2, q3, q4, q5, q6
+        grade = [q1, q2, q3, q4, q5, q6]
         print(grade)

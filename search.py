@@ -88,7 +88,7 @@ def depthFirstSearch(problem):
     """
 
     visited = set()
-    visited.add(problem.getStartState())
+    # visited.add(problem.getStartState())
     stack = util.Stack()
     
     # Tuple with coordinate and current path
@@ -96,14 +96,14 @@ def depthFirstSearch(problem):
 
     while not stack.isEmpty():
         current,prevPath = stack.pop()
-        # print(prevPath)
+        if current not in visited:
+            visited.add(current)
+        else:
+            continue
         if problem.isGoalState(current):
             return prevPath
-
         for coordinate, direction, _ in problem.getSuccessors(current):
-            if coordinate not in visited:
-                visited.add(coordinate)
-                stack.push((coordinate,prevPath+[direction]))
+            stack.push((coordinate,prevPath+[direction]))
 
     return []
 
@@ -130,20 +130,21 @@ def breadthFirstSearch(problem):
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     visited = set()
-    visited.add(problem.getStartState())
+    # visited.add(problem.getStartState())
     pq = util.PriorityQueue()
     pq.push((problem.getStartState(),[]),0)
     while not pq.isEmpty():
         current, prevPath = pq.pop()
+        if current not in visited:
+            visited.add(current)
+        else:
+            continue
         if problem.isGoalState(current):
             return prevPath
-
         for coordinate, direction, _ in problem.getSuccessors(current):
-            if coordinate not in visited:
-                visited.add(coordinate)
-                item = (coordinate,prevPath+[direction]) 
-                priority = problem.getCostOfActions(prevPath+[direction])
-                pq.push(item,priority)
+            item = (coordinate,prevPath+[direction]) 
+            priority = problem.getCostOfActions(prevPath+[direction])
+            pq.push(item,priority)
     return []
 
 def nullHeuristic(state, problem=None):
@@ -156,21 +157,25 @@ def nullHeuristic(state, problem=None):
 def aStarSearch(problem, heuristic=nullHeuristic):
     """Search the node that has the lowest combined cost and heuristic first."""
     visited = set()
-    visited.add(problem.getStartState())
+    # visited.add((problem.getStartState(),0))
     pq = util.PriorityQueue()
     pq.push((problem.getStartState(),[]),0)
     while not pq.isEmpty():
         current, prevPath = pq.pop()
+        if current not in visited:
+            visited.add(current)
+        else:
+            continue
         if problem.isGoalState(current):
             return prevPath
 
         for coordinate, direction, _ in problem.getSuccessors(current):
-            if coordinate not in visited:
-                visited.add(coordinate)
-                item = (coordinate,prevPath+[direction]) 
-                f = problem.getCostOfActions(prevPath+[direction])
-                f = f + heuristic(coordinate,problem)
-                pq.push(item,f)
+            item = (coordinate,prevPath+[direction]) 
+            f = problem.getCostOfActions(prevPath+[direction])
+            f = f + heuristic(coordinate,problem)
+            # if (coordinate,f) not in visited:
+            #     visited.add(coordinate)
+            pq.push(item,f)
     return []
 
 
